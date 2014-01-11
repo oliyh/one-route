@@ -1,4 +1,5 @@
 (ns one-route.core
+  (:use [ring.middleware.reload])
   (:require [compojure.handler :as handler]
             [compojure.core
              :as c-core
@@ -11,11 +12,14 @@
   (GET "/" [] (slurp "resources/public/html/index.html"))
   (c-route/resources "/"))
 
-(defn app []
-  (-> (handler/api api)
-    (ring-json/wrap-json-body {:keywords? true})
-    (ring-json/wrap-json-response)))
+(def app
+  (-> (var api)
+      (handler/api)
+      (wrap-reload '(one-route.core))
+      (ring-json/wrap-json-body {:keywords? true})
+      (ring-json/wrap-json-response)))
 
 (defn start-server []
-  (server/serve (app) {:port 8070
+  (server/serve #'app {:port 8070
+                       :join? false
                        :open-browser? false}))
