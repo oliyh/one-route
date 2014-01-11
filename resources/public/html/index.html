@@ -8,18 +8,24 @@
     <script src="js/bootstrap.min.js"></script>
     <script>
         function lookupEntry() {
-            $.get('/entry/' + $('#lookupName').val(), function(data) {
-                $('#lookupEntryResult').text(JSON.stringify(data))
-            })
-        }
+            $.ajax({
+	url: '/entry/' + $('#lookupName').val(),
+	success: function(data) {
+        $('#lookupEntryResult').text(JSON.stringify(data))
+        },
+	error: function(jqXHR, textStatus, errorThrown) { $('#lookupEntryResult').text(textStatus + " " + errorThrown); }
+        })
+	}
 
         function addEntry() {
             $.ajax({
                 url: '/entry',
                 data: JSON.stringify({name: $('#addName').val(), email: $('#addEmail').val()}),
                         contentType: 'application/json',
-                type: 'PUT',
-                success: function(data) { $('#addEntryResult').text(JSON.stringify(data)) }
+        type: 'PUT',
+        success: function(data) { $('#addEntryResult').text(JSON.stringify(data)); },
+	error: function(jqXHR, textStatus, errorThrown) { $('#addEntryResult').text(textStatus + " " + errorThrown); }
+
             })
         }
     </script>
