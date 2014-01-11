@@ -1,5 +1,6 @@
 (ns one-route.core
-  (:use [ring.middleware.reload])
+  (:use [ring.middleware.reload]
+        [ring.util.response])
   (:require [compojure.handler :as handler]
             [compojure.core
              :as c-core
@@ -10,6 +11,7 @@
 
 (defroutes api
   (GET "/" [] (slurp "resources/public/html/index.html"))
+  (GET "/health" [] (response {:health "green"}))
   (c-route/resources "/"))
 
 (def app
