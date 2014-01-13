@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Address book</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script>
+        function lookupEntry() {
+            $.get('/entry/' + $('#lookupName').val(), function(data) {
+                $('#lookupEntryResult').text(JSON.stringify(data))
+            })
+        }
+
+        function addEntry() {
+            $.ajax({
+                url: '/entry',
+                data: JSON.stringify({name: $('#addName').val(), email: $('#addEmail').val()}),
+                        contentType: 'application/json',
+                type: 'PUT',
+                success: function(data) { $('#addEntryResult').text(JSON.stringify(data)) }
+            })
+        }
+    </script>
+</head>
+<body>
+<div class="row">
+    <div class="col-lg-10 col-lg-offset-1">
+        <h1>Address book</h1>
+        <div id="lookup-view" class="panel">
+            <h2>Lookup</h2>
+            <form id="lookupForm" class="form-inline" onsubmit="return false;">
+                <div id="lookup-name-group">
+                    <input id="lookupName" name="name" type="text" class="form-control" placeholder="Name">
+                </div>
+                <button type="submit" onclick="lookupEntry();" class="btn btn-success">Lookup</button>
+            </form>
+            <hr/>
+            <pre id="lookupEntryResult"></pre>
+        </div>
+
+        <div id="add-view" class="panel">
+            <h2>Add entry</h2>
+            <form id="addForm" class="form-inline" onsubmit="return false;">
+                <div id="add-name-group">
+                    <input id="addName" name="name" type="text" class="form-control" placeholder="Name">
+                </div>
+                <div id="email-group">
+                    <input id="addEmail" name="name" type="text" class="form-control" placeholder="Email address">
+                </div>
+                <button type="submit" onclick="addEntry();" class="btn btn-success">Add</button>
+            </form>
+            <hr/>
+            <pre id="addEntryResult"></pre>
+        </div>
+    </div>
+</body>
+</html>

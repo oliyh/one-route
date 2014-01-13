@@ -4,13 +4,17 @@
              :as c-core
              :refer [defroutes GET POST PUT DELETE HEAD OPTIONS PATCH ANY]]
             [compojure.route :as c-route]
-            [ring.server.standalone :as server]))
+            [ring.server.standalone :as server]
+            [ring.middleware.json :as ring-json]))
 
 (defroutes api
-  (GET "/" [] "Hello World"))
+  (GET "/" [] (slurp "resources/public/html/index.html"))
+  (c-route/resources "/"))
 
 (defn app []
-  (handler/api api))
+  (-> (handler/api api)
+    (ring-json/wrap-json-body {:keywords? true})
+    (ring-json/wrap-json-response)))
 
 (defn start-server []
   (server/serve (app) {:port 8070
